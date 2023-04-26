@@ -16,6 +16,14 @@ void untrusted_main(int core_id, uintptr_t fdt_addr) {
     test_completed();
   }
 
+#ifdef TOTAL
+    riscv_perf_cntr_begin();
+#endif
+
+#ifdef BOOKKEEPING1
+    riscv_perf_cntr_begin();
+#endif
+
   //uint64_t region1_id = addr_to_region_id((uintptr_t) &region1);
   uint64_t region2_id = addr_to_region_id((uintptr_t) &region2);
   uint64_t region3_id = addr_to_region_id((uintptr_t) &region3);
@@ -86,6 +94,18 @@ void untrusted_main(int core_id, uintptr_t fdt_addr) {
     test_completed();
   }
 
+#ifdef BOOKKEEPING1
+    riscv_perf_cntr_end();
+#endif
+
+#ifdef LOADING
+    riscv_perf_cntr_begin();
+#endif
+
+#ifdef LOADING_HANDLER
+    riscv_perf_cntr_begin();
+#endif
+
   uintptr_t enclave_handler_address = (uintptr_t) &region2;
   uintptr_t enclave_handler_stack_pointer = enclave_handler_address + HANDLER_LEN + (STACK_SIZE * NUM_CORES);
 
@@ -96,6 +116,10 @@ void untrusted_main(int core_id, uintptr_t fdt_addr) {
     printm("sm_enclave_load_handler FAILED with error code %d\n\n", result);
     test_completed();
   }
+
+#ifdef LOADING_HANDLER
+    riscv_perf_cntr_end();
+#endif
 
   uintptr_t page_table_address = enclave_handler_stack_pointer;
 
@@ -136,6 +160,10 @@ void untrusted_main(int core_id, uintptr_t fdt_addr) {
 
   if((size % PAGE_SIZE) != 0) num_pages_enclave++;
 
+#ifdef LOADING_PAGES
+    riscv_perf_cntr_begin();
+#endif
+
   for(int i = 0; i < num_pages_enclave; i++) {
 
     printm("Enclave Load Page\n");
@@ -151,6 +179,18 @@ void untrusted_main(int core_id, uintptr_t fdt_addr) {
     virtual_addr += PAGE_SIZE;
 
   }
+
+#ifdef LOADING_PAGES
+    riscv_perf_cntr_end();
+#endif
+
+#ifdef LOADING
+    riscv_perf_cntr_end();
+#endif
+
+#ifdef BOOKKEEPING2
+    riscv_perf_cntr_begin();
+#endif
 
   //uintptr_t enclave_sp = virtual_addr;
 
@@ -177,11 +217,25 @@ void untrusted_main(int core_id, uintptr_t fdt_addr) {
 
   printm("Enclave Enter\n");
 
+#ifdef BOOKKEEPING2
+    riscv_perf_cntr_end();
+#endif
+#ifdef ENCLAVE_RUN
+    riscv_perf_cntr_begin();
+#endif
+
   result = sm_enclave_enter(enclave_id, thread_id);
     
   char *enclave_output = (char *) SHARED_MEM_REG;
 
   printm(enclave_output);
+
+#ifdef ENCLAVE_RUN
+    riscv_perf_cntr_end();
+#endif
+#ifdef TOTAL
+    riscv_perf_cntr_end();
+#endif
 
   send_exit_cmd(0);
   test_completed();
