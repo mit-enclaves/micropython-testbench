@@ -6,7 +6,7 @@
 # Assumes: $(CC)
 # Assumes: $(OBJCOPY)
 
-ENCLAVE_BIN := /mnt/efs/fs1/micropython/ports/bare-riscv/build/firmware.bin
+ENCLAVE_BIN := /home/drean/micropython/ports/bare-riscv/build/firmware.bin
 
 # Flags
 INFRA_CFLAGS := $(CFLAGS)
@@ -75,6 +75,7 @@ PAYLOAD_SRC := \
 	$(PLATFORM_DIR)/htif_for_linking.c \
 	$(PLATFORM_DIR)/sm_keys.c \
 	$(PLATFORM_DIR)/sm_binary.S \
+	$(PLATFORM_DIR)/platform_lock.c \
 	$(INFRA_DIR)/sbi/console.c \
 
 # Rules
