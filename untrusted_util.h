@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "sbi/console.h"
 #include <parameters.h>
+#include "platform/platform_lock.h"
+#include "platform/platform_control_spec.h"
 
 void os_entry(int core_id, uintptr_t fdt_addr) __attribute__((noreturn));
 

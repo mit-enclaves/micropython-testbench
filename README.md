@@ -1,2 +1,2 @@
-# enclave_skeleton
-Simple infrastructure to run an enclave
+# micropython-testbench
+Simple infrastructure to run the micro python enclave
